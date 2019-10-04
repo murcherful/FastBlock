@@ -4,10 +4,9 @@
 #include <unistd.h>
 using namespace std;
 
-
-
 MainControl::MainControl(int bt){
     breakTime = bt;
+    rec = new Record(MWIDTH, MHEIGHT, "record.txt");
     init_keyboard();
     cout << "\033[?25l\n"; 
 }
@@ -18,13 +17,22 @@ MainControl::~MainControl(){
 }
 
 void MainControl::start(){
-    screenClear();
     while(1){
-        drawRect(0, 0, MWIDTH, MHEIGHT, WHITE);
+        //screenClear();
+        drawRect(0, 0, MWIDTH, MHEIGHT, BULE);
+        drawWholeRect(1, 1, MWIDTH-2, MHEIGHT-2, WHITE);
         loadWelcome();
         int key = waitKey();
         if(key == 27){
             break;
+        }
+        else if(key == 'r'){
+            rec->show();
+            while(waitKey() != 27){}
+        }
+        else if(key == 'h'){
+            loadHelper();
+            while(waitKey() != 27){}
         }
         else if(key == '1'){
             screenClear();
@@ -34,7 +42,8 @@ void MainControl::start(){
             while(1){
                 if(scene.update()){
                     scene.draw();
-                    waitKey();
+                    rec->record(scene.getScore());
+                    while(waitKey() != 27){}
                     break;
                 }
                 scene.draw();
@@ -44,7 +53,7 @@ void MainControl::start(){
                         break;
                     }
                     else if(key == ' '){
-                        scene.playerJump();
+                        /* scene.playerJump(); */
                     }
                     else if(key == 'p'){
                         if(scene.getIsStop()){
@@ -55,12 +64,15 @@ void MainControl::start(){
                         }
                     }
                     else if(key == 'w'){
+                        scene.playerJump();
                     }
                     else if(key == 's'){
                     }
                     else if(key == 'a'){
+                        scene.playerLeft();
                     }
                     else if(key == 'd'){
+                        scene.playerRight();
                     }
 
                 }
@@ -79,7 +91,9 @@ void MainControl::start(){
                 scene1.draw();
                 scene2.draw();
                 if(scene1.getIsGameOver() && scene2.getIsGameOver()){
-                    waitKey();
+                    rec->record(scene1.getScore());
+                    rec->record(scene2.getScore());
+                    while(waitKey() != 27){}
                     break;
                 }
                 if(kbhit()){
@@ -87,19 +101,34 @@ void MainControl::start(){
                     if(key == 27){
                         break;
                     }
-                    else if(key == 'a'){
+                    else if(key == 'p'){
+                        if(scene1.getIsStop()){
+                            scene1.start();
+                            scene2.start();
+                        }                 
+                        else{
+                            scene1.stop();
+                            scene2.stop();
+                        }
+                    }
+
+                    else if(key == 'w'){
                         scene1.playerJump();
                     }
-                    else if(key == 'l'){
+                    else if(key == 'i'){
                         scene2.playerJump();
                     }
-                    else if(key == 'w'){
-                    }
-                    else if(key == 's'){
-                    }
                     else if(key == 'a'){
+                        scene1.playerLeft();
+                    }
+                    else if(key == 'j'){
+                        scene2.playerLeft();
                     }
                     else if(key == 'd'){
+                        scene1.playerRight();
+                    }
+                    else if(key == 'l'){
+                        scene2.playerRight();
                     }
 
                 }
@@ -110,6 +139,7 @@ void MainControl::start(){
         usleep(breakTime*1000);
     }
     screenClear();
+    cout << "\033[0;0H";
 } 
 
 void MainControl::loadWelcome(){
@@ -120,15 +150,49 @@ void MainControl::loadWelcome(){
             drawPixel(shiftX+j, shiftY+i, Title[i][j]);
         }
     } 
-    drawText(shiftX+43, shiftY+12, "PLAYER1: PRESS '1' TO PALY", WHITE, BLACK);
-    drawText(shiftX+45, shiftY+13, "press 'space' to jump", WHITE, BLACK);
-    drawText(shiftX+43, shiftY+14, "PLAYER2: PRESS '2' TO PALY", WHITE, BLACK);
-    drawText(shiftX+45, shiftY+15, "player1 press 'a' to jump", WHITE, BLACK);
-    drawText(shiftX+45, shiftY+16, "player1 press 'l' to jump", WHITE, BLACK);
-    drawText(shiftX+43, shiftY+17, "PRESS 'p' TO PAUSE", WHITE, BLACK);
-    drawText(shiftX+43, shiftY+18, "PRESS 'ESC' TO QUIT", WHITE, BLACK);
-    drawText(shiftX+53, shiftY+19, "HAVE FUN!!!", RED, BLACK);
-    drawText(shiftX+53, shiftY+21, "BY  MURCHERFUL", BULE, BLACK);
+    /* drawText(shiftX+43, shiftY+12, "PLAYER1: PRESS '1' TO PALY", WHITE, BLACK); */
+    /* drawText(shiftX+45, shiftY+13, "press 'space' to jump", WHITE, BLACK); */
+    /* drawText(shiftX+43, shiftY+14, "PLAYER2: PRESS '2' TO PALY", WHITE, BLACK); */
+    drawText(shiftX+43, shiftY+15, "PRESS 'h' TO SEE HELP", WHITE, BLACK);
+    /* drawText(shiftX+45, shiftY+16, "player1 press 'l' to jump", WHITE, BLACK); */
+    /* drawText(shiftX+43, shiftY+17, "PRESS 'p' TO PAUSE", WHITE, BLACK); */
+    /* drawText(shiftX+43, shiftY+18, "PRESS 'ESC' TO QUIT", WHITE, BLACK); */
+    /* drawText(shiftX+43, shiftY+18, "PRESS 'r' TO SEE RECORD", WHITE, BLACK); */
+    drawText(shiftX+51, shiftY+18, "HAVE FUN!!!:)", RED, BLACK);
+    drawText(shiftX+51, shiftY+20, "BY  MURCHERFUL", BULE, BLACK);
+}
+
+void MainControl::loadHelper(){
+    int shiftX = (MWIDTH-HELPERW)/2;
+    int shiftY = (MHEIGHT-HELPERH)/2;
+    drawRect(shiftX, shiftY, HELPERW, HELPERH, BULE);
+    drawWholeRect(shiftX+1, shiftY+1, HELPERW-2, HELPERH-2, WHITE);
+
+    drawText(shiftX+8, shiftY+2, "HELPER", BLACK, WHITE);
+
+    drawText(shiftX+2, shiftY+4, "ONE PLAYER: PRESS '1' TO PALY", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+5, "press 'w' to jump", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+6, "press 'a' to move left", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+7, "press 'd' to move right", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+8, "TWO PLAYERS: PRESS '2' TO PALY", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+9, "player1 press 'w' to jump", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+10, "player1 press 'a' to move left", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+11, "player1 press 'd' to move right", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+12, "player2 press 'i' to jump", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+13, "player2 press 'j' to move left", BLACK, WHITE);
+    drawText(shiftX+4, shiftY+14, "player2 press 'l' to move right", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+15, "PRESS 'p' TO PAUSE", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+16, "PRESS 'ESC' TO QUIT OR GO BACK", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+17, "PRESS 'r' TO SEE RECORD", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+19, "IN THIS GAME YOU NEED TO KEEP THE", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+20, "BLUE BLOCK AWAY FROM RED BLOCKS AND", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+21, "WHITE BREAKS. YOUR SCORE WILL", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+22, "INCREASE UNTIL YOU DIE. YOU ONLY", BLACK, WHITE);
+    drawText(shiftX+2, shiftY+23, "GOT ONE LIFE.", BLACK, WHITE);
+
+    /* drawText(shiftX+2, shiftY+10, "HAVE FUN!!!:)", RED, WHITE); */
+    /* drawText(shiftX+2, shiftY+11, "BY  MURCHERFUL", BULE, WHITE); */
+   
 }
 
 int MainControl::waitKey(){

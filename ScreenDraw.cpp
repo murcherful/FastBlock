@@ -12,6 +12,12 @@ void drawPixel(int x, int y, int color){
     printf("\033[%d;%dH\033[4%dm  \033[0m\n", ty, 2*tx-1, color);
 }
 
+void drawPixelC(int x, int y, char c1, char c2, int color, int backColor){
+    int tx = std::max(x, 0) + 1;
+    int ty = std::max(y, 0) + 1;
+
+    printf("\033[%d;%dH\033[3%dm\033[4%dm%c%c\033[0m\n", ty, 2*tx-1, color, backColor, c1, c2);
+}
 void screenClear(){
     printf("\033[2J\n");
 }
@@ -39,6 +45,22 @@ void drawLine(int x, int y, int l, bool hori, int color){
     else{
         for(int i = 0; i < l; ++i){
             drawPixel(x, y+i, color);
+        }
+    }
+}
+
+void drawLineC(int x, int y, int l, char c1, char c2, bool hori, int color, int backColor){
+    if(hori){
+        printf("\033[%d;%dH", y+1, 2*(x+1)-1);
+        printf("\033[3%dm\033[4%dm", color, backColor);
+        for(int i = 0; i < l; ++i){
+            printf("%c%c", c1, c2);
+        }
+        printf("\033[0m\n");
+    }
+    else{
+        for(int i = 0; i < l; ++i){
+            drawPixelC(x, y+i, c1, c2, color, backColor);
         }
     }
 }

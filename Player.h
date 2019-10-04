@@ -6,22 +6,24 @@
 #define PLAYERX 5
 #define PLAYERV -2
 #define PLAYERA 0.2
-
+#define FLOAT_TIME 60
+#define FLOATH 10
 
 using namespace std;
 
 class Player
 {
 public:
-    Player(int tx, int ty, Floor* tfloors);
+    Player(int tx, int ty);
     ~Player();
-    void update();
+    /* void update(); */
+    void update2();
     void draw();
     void jump();
-    bool getIsDead();
-    int getY();
+    void left();
+    void right();
+    void floatStart();
 
-private:
     int x;
     int y;
     double rx;
@@ -29,7 +31,9 @@ private:
     double v;
     double a;
     int jumpTime;
-    Floor* floors;
-    bool isDead;
+    bool isFloat;
+
+private:
+    int floatTime; 
 };
 

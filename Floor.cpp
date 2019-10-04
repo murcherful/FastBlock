@@ -40,23 +40,30 @@ void Floor::draw(){
             break;
         case DEATH_FLOOR:
             drawLine(x+i, y-(infos[i].height-h), infos[i].height-h, 0, RED);
+            break;
+        case SCORE_FLOOR:
+            drawLine(x+i, y, infos[i].height, 0, YELLOW);
+            break;
+        case FLOAT_FLOOR:
+            drawLine(x+i, y, infos[i].height, 0, PURPLE);
+            break;
         }
     }
 }
 
 void Floor::addRandomFloor(){
-    int type = rand()%36;
+    int type = rand()%70;
     Info newInfo;
-    if(type == 0){
+    if(type == 0 || type == 5){
         newInfo.height = h;
         newInfo.type = BREAK_FLOOR;
     }
-    else if(type == 1){
-        newInfo.height = h+1;
+    else if(type == 1 || type == 6){
+        newInfo.height = h+DEATH_FLOOR_H1;
         newInfo.type = DEATH_FLOOR;
     }
-    else if(type == 2){
-        newInfo.height = h+2;
+    else if(type == 2 || type == 7){
+        newInfo.height = h+DEATH_FLOOR_H2;
         newInfo.type = DEATH_FLOOR;
     }
     else if(type == 3){
@@ -86,18 +93,3 @@ void Floor::initFloor(){
     }
 }
 
-int Floor::getH(){
-    return h;
-}
-
-int Floor::getY(){
-    return y;
-}
-
-int Floor::getX(){
-    return x;
-}
-
-int Floor::getW(){
-    return w;
-}
