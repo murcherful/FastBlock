@@ -12,6 +12,7 @@ MainControl::MainControl(int bt){
 }
 
 MainControl::~MainControl(){
+    delete rec;
     close_keyboard();
     cout << "\033[?25h\n"; 
 }

@@ -22,6 +22,8 @@ Scene::Scene(int tx, int ty, int tw, int th){
 }
 
 Scene::~Scene(){
+    delete floors;
+    delete player;
     clearRect(x, y, w, h);
 }
 
