@@ -23,7 +23,12 @@ This is a game for AP(Advanced Programming) Project1.
   ```
   
 - windows版：
+  
   可以运行，但运行速度远不如Linux。希望可以有小伙伴优化。文件在win分支。
+  
+- Slides
+  下载整个slides文件夹，打开其中的html文件即可。slides使用Markdown+Remark编写，如有兴趣请访问：https://github.com/gnab/remark
+  
   
 # 游戏
   
