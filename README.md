@@ -22,6 +22,9 @@ This is a game for AP(Advanced Programming) Project1.
   ./Game
   ```
   
+- windows版：
+  可以运行，但运行速度远不如Linux。希望可以有小伙伴优化。文件在win分支。
+  
 # 游戏
   
 ##### 1. 游戏名称
